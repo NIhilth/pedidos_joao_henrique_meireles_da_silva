@@ -88,7 +88,7 @@ async function edit(dados, id) {
 
     const order = await crud.getById(nomeTabela, id)
 
-    if (order.status != "Open") {
+    if (order.status == "Close") {
         return { message: "Esse pedido já foi fechado!" }
     }
     if (dados.orderProducts && dados.orderProducts.length != 0) {
@@ -98,9 +98,10 @@ async function edit(dados, id) {
 
         const orderProducts = await crud.get("OrderProducts")
         const productsfFromThsOrder = orderProducts.filter((e) => e.orderId == id)
+        let adicionado
 
         for (let product of dados.orderProducts) {
-            let adicionado = false
+            adicionado = false
             for (let orderProduct of productsfFromThsOrder) {
                 if (product.productId == orderProduct.productId) {
                     const editedOrderProduct = {
