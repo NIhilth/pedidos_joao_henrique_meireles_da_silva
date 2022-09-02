@@ -65,7 +65,6 @@ async function create(dados) {
 }
 
 async function edit(dados, id) {
-    //TESTARRARARARRARARARARARA
     if (!id) {
         return { message: "Id do pedido não informado!" }
     }
@@ -76,15 +75,14 @@ async function edit(dados, id) {
         return { message: "Id de pedido inválido!" }
     }
 
-    if (!dados.userId) {
-        return { message: "O id de usuário não foi informado!" }
+    if (dados.userId) {
+        try {
+            await crud.getById("Users", dados.userId);
+        } catch (error) {
+            return { message: "Id de usuário inválido!" }
+        }
     }
 
-    try {
-        await crud.getById("Users", dados.userId);
-    } catch (error) {
-        return { message: "Id de usuário inválido!" }
-    }
 
     const order = await crud.getById(nomeTabela, id)
 
@@ -97,15 +95,17 @@ async function edit(dados, id) {
         }
 
         const orderProducts = await crud.get("OrderProducts")
-        const productsfFromThsOrder = orderProducts.filter((e) => e.orderId == id)
+        const productsFromThsOrder = orderProducts.filter((e) => e.orderId == id)
         let adicionado
 
         for (let product of dados.orderProducts) {
             adicionado = false
-            for (let orderProduct of productsfFromThsOrder) {
+            for (let orderProduct of productsFromThsOrder) {
                 if (product.productId == orderProduct.productId) {
+                    console.log(orderProduct);
+
                     const editedOrderProduct = {
-                        productId: orderProduct.id,
+                        productId: orderProduct.productId,
                         quantity: orderProduct.quantity + product.quantity,
                         orderId: orderProduct.orderId
                     }
@@ -124,6 +124,15 @@ async function edit(dados, id) {
 
                 await crud.save("OrderProducts", null, orderProduct)
             }
+        }
+    }
+
+    if (dados.status == "Close") {
+        const orders = await crud.get("OrderProducts")
+        const productsFromThsOrder = orders.filter((e) => e.orderId == id)
+
+        if (productsFromThsOrder == [] || productsFromThsOrder == "") {
+            return { message: "Esse pedido não tem itens !" }
         }
     }
 
