@@ -19,4 +19,8 @@ router.put("/:id", async (req, res) => {
     res.json(await ordersHandler.edit(req.body, req.params.id))
 })
 
+router.delete("/:id", async (req, res) => {
+    res.json(await ordersHandler.remove(req.params.id))
+})
+
 module.exports = router;

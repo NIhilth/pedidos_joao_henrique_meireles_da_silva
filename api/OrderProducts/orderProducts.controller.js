@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
 })
 
 router.put("/:id", async (req, res) => {
-    res.json(await orderProductsHandler.edit(req.body))
+    res.json(await orderProductsHandler.edit(req.body, req.params.id))
 })
 
 router.delete("/:id", async (req, res) => {

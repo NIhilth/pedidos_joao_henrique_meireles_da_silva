@@ -22,12 +22,12 @@ async function create(dados){
     return await crud.save(nomeTabela, null, dados)
 }
 
-async function edit(dados){
-
+async function edit(dados, id){
+    return await crud.save(nomeTabela, id, dados)
 }
 
 async function remove(id){
-
+    await crud.remove(nomeTabela, id)
 }
 
 module.exports = {
